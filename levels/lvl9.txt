@@ -4,4 +4,10 @@
 # # # # # # # # # # # # # # #
 . . . . . . # G # . . . . . .
 . . . . . . # # # . . . . . .
-13 1 2 1 2 1 12 
+1
+{   "switch": "teleport_switch",
+    "position": [13,1],
+    "blocks_process": 2,
+    "point": [[2,1],[12,1]],
+    "type": "toggle" }
+

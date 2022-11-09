@@ -7,4 +7,9 @@
 # # # . . . . # # # . . # # #
 . # # . . . . # . . . . . . .
 . . # # # # # # . . . . . . .
-9 4 1 6 3 0 1 
+1
+{   "switch": "hard_switch",
+    "position": [9,4],
+    "blocks_process": 1,
+    "point": [[3,6]],
+    "type": "toggle" }

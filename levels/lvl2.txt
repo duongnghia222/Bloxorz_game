@@ -10,13 +10,9 @@
     "position": [2,2],
     "blocks_process": 2,
     "point": [[4,4],[5,4]],
-    "type": "toggle",
-    "x_split": "None",
-    "y_split": "None" }
+    "type": "toggle"}
 {   "switch": "hard_switch",
     "position": [8,1],
     "blocks_process": 2,
     "point": [[10,4],[11,4]],
-    "type": "toggle",
-    "x_split": "None",
-    "y_split": "None" }
+    "type": "toggle"}

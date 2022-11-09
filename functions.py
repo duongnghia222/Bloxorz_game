@@ -16,7 +16,7 @@ def sort_switch(block, x, y):
     game_map = block.game_map
     for obj in global_variables.objects:
         if (x, y) == (obj["position"][0], obj["position"][1]):  # find object by position
-            if obj["type"] != "sort":  # for debugging
+            if obj["switch"] != "sort_switch":  # for debugging
                 print("sort_switch wrong type !!!")
                 break
             blocks_4_process = obj["blocks_process"]
@@ -25,15 +25,15 @@ def sort_switch(block, x, y):
                 bridge_y = obj["point"][i][1]
 
                 if obj["type"] == "toggle":
-                    if game_map[bridge_x][bridge_y] == '.':
-                        block.game_map[bridge_x][bridge_y] = '#'
+                    if game_map[bridge_y][bridge_x] == '.':
+                        block.game_map[bridge_y][bridge_x] = '#'
                     else:
-                        block.game_map[bridge_x][bridge_y] = '.'
+                        block.game_map[bridge_y][bridge_x] = '.'
                 elif obj["type"] == "open":
-                    block.game_map[bridge_x][bridge_y] = '#'
+                    block.game_map[bridge_y][bridge_x] = '#'
 
                 elif obj["type"] == "close":
-                    block.game_map[bridge_x][bridge_y] = '.'
+                    block.game_map[bridge_y][bridge_x] = '.'
                 else:
                     print("Error at func sort_switch")
 
@@ -42,7 +42,7 @@ def hard_switch(block, x, y):
     game_map = block.game_map
     for obj in global_variables.objects:
         if (x, y) == (obj["position"][0], obj["position"][1]):  # find object by position
-            if obj["type"] != "hard":  # for debugging
+            if obj["switch"] != "hard_switch":  # for debugging
                 print("sort_switch wrong type !!!")
                 break
             blocks_4_process = obj["blocks_process"]
@@ -51,15 +51,15 @@ def hard_switch(block, x, y):
                 bridge_y = obj["point"][i][1]
 
                 if obj["type"] == "toggle":
-                    if game_map[bridge_x][bridge_y] == '.':
-                        block.game_map[bridge_x][bridge_y] = '#'
+                    if block.game_map[bridge_y][bridge_x] == '.':
+                        block.game_map[bridge_y][bridge_x] = '#'
                     else:
-                        block.game_map[bridge_x][bridge_y] = '.'
+                        block.game_map[bridge_y][bridge_x] = '.'
                 elif obj["type"] == "open":
-                    block.game_map[bridge_x][bridge_y] = '#'
+                    block.game_map[bridge_y][bridge_x] = '#'
 
                 elif obj["type"] == "close":
-                    block.game_map[bridge_x][bridge_y] = '.'
+                    block.game_map[bridge_y][bridge_x] = '.'
                 else:
                     print("Error at func hard_switch")
 
@@ -67,14 +67,14 @@ def hard_switch(block, x, y):
 def teleport_switch(block, x, y):
     for obj in global_variables.objects:
         if (x, y) == (obj["position"][0], obj["position"][1]):  # find object by position
-            if obj["type"] != "teleport":  # for debugging
+            if obj["switch"] != "teleport_switch":  # for debugging
                 print("teleport_switch wrong type !!!")
                 break
             block.x = obj["point"][0][0]
             block.y = obj["point"][0][1]
             block.x_split = obj["point"][1][0]
             block.y_split = obj["point"][1][1]
-            block.pos = "SPLIT"
+            block.status = "SPLIT"
 
 
 def process_state(block):
@@ -90,16 +90,26 @@ def process_state(block):
             hard_switch(block, x, y)
         if status == "STAND" and game_map[y][x] == 'o':
             sort_switch(block, x, y)
-        if status == "LIE_HORIZONTAL" and game_map[y][x + 1] == 'o':
-            sort_switch(block, x + 1, y)
-        if status == "LIE_VERTICAL" and game_map[y + 1][x] == 'o':
-            sort_switch(block, x, y + 1)
+        if status == "LIE_HORIZONTAL":
+            if game_map[y][x] == 'o':
+                sort_switch(block, x, y)
+            elif game_map[y][x-1] == 'o':
+                sort_switch(block, x - 1, y)
+            elif game_map[y][x+1] == 'o':
+                sort_switch(block, x + 1, y)
+        if status == "LIE_VERTICAL":
+            if game_map[y][x] == 'o':
+                sort_switch(block, x, y)
+            elif game_map[y-1][x] == 'o':
+                sort_switch(block, x, y - 1)
+            elif game_map[y+1][x] == 'o':
+                sort_switch(block, x, y + 1)
         if status == "SPLIT" and game_map[y][x] == 'o':
             sort_switch(block, x, y)
         if status == "SPLIT" and game_map[y_split][x_split] == 'o':
             sort_switch(block, x_split, y_split)
         if status == "STAND" and game_map[y][x] == "@":
-            teleport_switch(block, x_split, y_split)
+            teleport_switch(block, x, y)
 
         #  if block status is "split" and 2 split parts are close enough then make it a complete block
         if status == "SPLIT":
@@ -127,18 +137,30 @@ def is_valid_move(block):
     status = block.status
     game_map = block.game_map
     # guard: not out of the board
-    if x < 0 or y < 0 or x > global_variables.col or y > global_variables.row:
+    if x < 0 or y < 0 or x >= global_variables.col or y >= global_variables.row:
         return False
     else:
         if x_split is not None and y_split is not None:
-            if x_split < 0 or y_split < 0 or x_split > global_variables.col or y_split > global_variables.row:
+            if x_split < 0 or y_split < 0 or x_split >= global_variables.col \
+                    or y_split >= global_variables.row or game_map[y_split][x_split] == ".":
                 return False
 
-    if game_map[y][x] == "#" or game_map[y_split][x_split] == "#":
+    if game_map[y][x] == ".":
         return False
     if status == "STAND":
         if game_map[y][x] == "=":  # can not stand on sort ground
             return False
+    if status == "LIE_VERTICAL":
+        if y >= global_variables.row - 1:
+            return False
+        if game_map[y+1][x] == '.':
+            return False
+    if status == "LIE_HORIZONTAL":
+        if x >= global_variables.col - 1:
+            return False
+        if game_map[y][x+1] == '.':
+            return False
+
     return True
 
 
@@ -169,20 +191,20 @@ def check_win(block):
         return False
 
 
-def view_2D_solution(block):
+def view_2d_solution(block):
     x = block.x
     y = block.y
     x_split = block.x_split
     y_split = block.y_split
-    pos = block.pos
+    status = block.status
     game_map = block.game_map
-    if pos != "SPLIT":
+    if status != "SPLIT":
         for i in range(len(game_map)):
             print("", end='  ')
             for j in range(len(game_map[i])):
-                if (i == y and j == x and pos == "STAND") \
-                        or ((i == y and j == x) or (i == y and j == x + 1) and pos == "LIE_HORIZONTAL") \
-                        or ((i == y and j == x) or (i == y + 1 and j == x) and pos == "LIE_VERTICAL"):
+                if (i == y and j == x and status == "STAND") \
+                        or ((i == y and j == x) or (i == y and j == x + 1) and status == "LIE_HORIZONTAL") \
+                        or ((i == y and j == x) or (i == y + 1 and j == x) and status == "LIE_VERTICAL"):
 
                     print("+", end=' ')
 
@@ -202,3 +224,21 @@ def view_2D_solution(block):
                 else:
                     print(game_map[i][j], end=' ')
             print("")
+
+
+def view_solution(block):
+    print("Solution:\n")
+    solution = [block]
+    temp = block.prev
+    while temp is not None:
+        solution.append(temp)
+        temp = temp.prev
+    solution.reverse()
+    cnt = 0
+    for i in solution:
+        cnt += 1
+        print("\nStep:", cnt)
+        view_2d_solution(i)
+        print("======================================")
+
+    print("All", cnt, "Steps")

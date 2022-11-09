@@ -3,27 +3,27 @@ from block import Block
 from algorithm import BFS
 from read_level_input import read_file
 import global_variables
-import functions
-import algorithm
+from test import test
 
 
 def main():
+    global_variables.init()
     print("\nChoose mode:")
     # is_test = int(input("1. Test all levels\n2. Step by step demo\nYour choice: "))
-    is_test = 2
+    is_test = 1
     if is_test == 1:
-        print("testing...")
+        test()
     elif is_test == 2:
         screen_scale = 50
         print("Showing step by step...")
         # level = int(input("choose level (from 1-33)\nYour choice: "))
-        level = 1
+        level = 9
         path = './levels/lvl' + str(level) + '.txt'
-        global_variables.init()
-        row, col, start_x, start_y, game_map, objects = read_file(path)
-        screen_height = row * screen_scale
-        screen_width = row * screen_scale
-        block = Block(start_x, start_y, "STAND", None, game_map)
+        global_variables.row, global_variables.col, global_variables.start_x, \
+            global_variables.start_y, game_map, global_variables.objects = read_file(path)
+        screen_height = global_variables.row * screen_scale
+        screen_width = global_variables.col * screen_scale
+        block = Block(global_variables.start_x, global_variables.start_y, "STAND", None, game_map)
         BFS(block)
 
 

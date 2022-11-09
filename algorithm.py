@@ -1,5 +1,5 @@
 import global_variables
-from functions import check_win, add_move, view_2D_solution
+from functions import check_win, add_move, view_solution
 
 
 def BFS(block):
@@ -8,8 +8,9 @@ def BFS(block):
     while queue:
         current = queue.pop(0)
         if check_win(current):
-            view_2D_solution(current)
-            print("Success!\nCalculated steps:", 99999999)
+            if global_variables.is_test == 2:
+                view_solution(current)
+                print("Success!\nCalculated steps:", current.id)
             return True
 
         if current.status != "SPLIT":  # if this is a complete block then it can move 4 directions
