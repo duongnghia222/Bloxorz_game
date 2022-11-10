@@ -263,27 +263,31 @@ def convert_solution_map(solution):
         elif s.status == "LIE_VERTICAL":
             s.game_map[s.y][s.x] = '+'
             if s.prev.status == "STAND":
-                if s.y > s.prev.y:  # block was in stand state and moved up
-                    s.game_map[s.y - 1][s.x] = '+'
-                else:
+                if s.y < s.prev.y:  # block was in stand state and moved up
+                    s.game_map[s.y + 1][s.x] = '+'
+                else:               # block was in stand state and moved down
                     s.game_map[s.y + 1][s.x] = '+'
             elif s.prev.status == "LIE_VERTICAL":
-                if s.x > s.prev.x:
-                    s.game_map[s.y][s.prev.x + 1] = '+'
-                else:
-                    s.game_map[s.y][s.prev.x - 1] = '+'
+                if s.x < s.prev.x:  # block was in lie vertical state and moved left
+                    s.game_map[s.y + 1][s.x] = '+'
+                else:               # block was in lie vertical state and moved right
+                    s.game_map[s.y + 1][s.x] = '+'
+            elif s.prev.status == "SPLIT":
+                s.game_map[s.y_split][s.x_split] = '+'
         elif s.status == "LIE_HORIZONTAL":
             s.game_map[s.y][s.x] = '+'
             if s.prev.status == "STAND":
                 if s.x < s.prev.x:  # block was in stand state and moved to left
-                    s.game_map[s.y][s.x - 1] = '+'
+                    s.game_map[s.y][s.x + 1] = '+'
                 else:
                     s.game_map[s.y][s.x + 1] = '+'
             elif s.prev.status == "LIE_HORIZONTAL":
-                if s.y > s.prev.y:
-                    s.game_map[s.prev.y + 1][s.x] = '+'
+                if s.y < s.prev.y:
+                    s.game_map[s.y][s.prev.x + 1] = '+'
                 else:
-                    s.game_map[s.prev.y - 1][s.x] = '+'
+                    s.game_map[s.y][s.prev.x + 1] = '+'
+            elif s.prev.status == "SPLIT":
+                s.game_map[s.y_split][s.x_split] = '+'
         elif s.status == "SPLIT":
             s.game_map[s.y][s.x] = '+'
             s.game_map[s.y_split][s.x_split] = '+'
