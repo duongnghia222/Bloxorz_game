@@ -6,7 +6,7 @@ import time
 
 
 def test():
-    for level in range(1,10):
+    for level in range(1,11):
         path = './levels/lvl' + str(level) + '.txt'
         global_variables.init()
         global_variables.row, global_variables.col, global_variables.start_x, \

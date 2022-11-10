@@ -10,14 +10,14 @@ def main():
     global_variables.init()
     print("\nChoose mode:")
     # is_test = int(input("1. Test all levels\n2. Step by step demo\nYour choice: "))
-    is_test = 1
-    if is_test == 1:
+    global_variables.is_test = 2
+    if global_variables.is_test == 1:
         test()
-    elif is_test == 2:
+    elif global_variables.is_test == 2:
         screen_scale = 50
         print("Showing step by step...")
         # level = int(input("choose level (from 1-33)\nYour choice: "))
-        level = 9
+        level = 1
         path = './levels/lvl' + str(level) + '.txt'
         global_variables.row, global_variables.col, global_variables.start_x, \
             global_variables.start_y, game_map, global_variables.objects = read_file(path)
