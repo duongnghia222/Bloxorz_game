@@ -1,17 +1,17 @@
 import global_variables
-from functions import check_win, add_move, view_solution
+from functions import check_win, add_move, solution_path
 
 
 def BFS(block):
     global_variables.previous = [block]  # save previous states
     queue = [block]
+    solution = []
     while queue:
         current = queue.pop(0)
         if check_win(current):
-            if global_variables.is_test == 2:
-                view_solution(current)
-                print("Success!\nCalculated steps:", current.id)
-            return True
+            print("Success!\nFound solution after", current.id, "steps:")
+            solution = solution_path(current)
+            break
 
         if current.status != "SPLIT":  # if this is a complete block then it can move 4 directions
             add_move(queue, current.move_up())
@@ -29,7 +29,6 @@ def BFS(block):
             add_move(queue, current.split_move_right_other())
             add_move(queue, current.split_move_down_other())
             add_move(queue, current.split_move_left_other())
-    print("Can not find the answer  :((")
-    return False
+    return solution
 
 

@@ -1,10 +1,9 @@
-
 from block import Block
 from algorithm import BFS
 from read_level_input import read_file
 import global_variables
 from test import test
-
+from draw import draw_pygame,draw_raw_solution
 
 def main():
     global_variables.init()
@@ -14,17 +13,26 @@ def main():
     if global_variables.is_test == 1:
         test()
     elif global_variables.is_test == 2:
-        screen_scale = 50
+        global_variables.pygame_display = 2
+        # global_variables.pygame_display = int(input("Show solution in game demo ?/nYes: 1/nNo: 2"))
         print("Showing step by step...")
         # level = int(input("choose level (from 1-33)\nYour choice: "))
         level = 1
         path = './levels/lvl' + str(level) + '.txt'
         global_variables.row, global_variables.col, global_variables.start_x, \
             global_variables.start_y, game_map, global_variables.objects = read_file(path)
-        screen_height = global_variables.row * screen_scale
-        screen_width = global_variables.col * screen_scale
         block = Block(global_variables.start_x, global_variables.start_y, "STAND", None, game_map)
-        BFS(block)
+        solution = BFS(block)
+        if solution:
+            #  draw solution
+            if global_variables.pygame_display == 1:
+                draw_pygame(solution, global_variables.row, global_variables.col)
+            else:
+                draw_raw_solution(solution)
+        else:
+            print("can not find solution :((((((")
+
+
 
 
 if __name__ == "__main__":

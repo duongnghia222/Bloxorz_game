@@ -1,4 +1,5 @@
 import global_variables
+from constants import *
 
 
 def add_move(queue, block):
@@ -226,19 +227,64 @@ def view_2d_solution(block):
             print("")
 
 
-def view_solution(block):
-    print("Solution:\n")
+def solution_path(block):
     solution = [block]
     temp = block.prev
     while temp is not None:
         solution.append(temp)
         temp = temp.prev
     solution.reverse()
-    cnt = 0
-    for i in solution:
-        cnt += 1
-        print("\nStep:", cnt)
-        view_2d_solution(i)
-        print("======================================")
+    return solution
 
-    print("All", cnt, "Steps")
+
+def get_tile_color(tile_contents):
+    tile_color = EMPTY
+    if tile_contents == ".":
+        tile_color = EMPTY_SPACE
+    if tile_contents == "#":
+        tile_color = TILE_COLOR
+    if tile_contents == "x":
+        tile_color = BUTTON_STRONG_COLOR
+    if tile_contents == "o":
+        tile_color = BUTTON_SOFT_COLOR
+    if tile_contents == "@":
+        tile_color = BUTTON_SPLIT_COLOR
+    if tile_contents == "G":
+        tile_color = GOAL
+    if tile_contents == "+":
+        tile_color = BLOCK_COLOR
+    return tile_color
+
+
+def convert_solution_map(solution):
+    for s in solution:
+        if s.status == "STAND":
+            s.game_map[s.y][s.x] = '+'
+        elif s.status == "LIE_VERTICAL":
+            s.game_map[s.y][s.x] = '+'
+            if s.prev.status == "STAND":
+                if s.y > s.prev.y:  # block was in stand state and moved up
+                    s.game_map[s.y - 1][s.x] = '+'
+                else:
+                    s.game_map[s.y + 1][s.x] = '+'
+            elif s.prev.status == "LIE_VERTICAL":
+                if s.x > s.prev.x:
+                    s.game_map[s.y][s.prev.x + 1] = '+'
+                else:
+                    s.game_map[s.y][s.prev.x - 1] = '+'
+        elif s.status == "LIE_HORIZONTAL":
+            s.game_map[s.y][s.x] = '+'
+            if s.prev.status == "STAND":
+                if s.x < s.prev.x:  # block was in stand state and moved to left
+                    s.game_map[s.y][s.x - 1] = '+'
+                else:
+                    s.game_map[s.y][s.x + 1] = '+'
+            elif s.prev.status == "LIE_HORIZONTAL":
+                if s.y > s.prev.y:
+                    s.game_map[s.prev.y + 1][s.x] = '+'
+                else:
+                    s.game_map[s.prev.y - 1][s.x] = '+'
+        elif s.status == "SPLIT":
+            s.game_map[s.y][s.x] = '+'
+            s.game_map[s.y_split][s.x_split] = '+'
+
