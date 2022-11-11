@@ -1,5 +1,7 @@
 import random as rnd
 
+
+
 class DNA:
     def __init__(self, gene_length):
         self.gene_length = gene_length

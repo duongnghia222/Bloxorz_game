@@ -292,3 +292,16 @@ def convert_solution_map(solution):
             s.game_map[s.y][s.x] = '+'
             s.game_map[s.y_split][s.x_split] = '+'
 
+def check_win_dna(dna, block):
+    for gene in dna.genes:
+        if gene == 1:
+            block.move_up()
+        elif gene == 2:
+            block.move_right()
+        elif gene == 3:
+            block.move_down()
+        else:
+            block.move_left()
+        if check_win(block):
+            return True
+    return False

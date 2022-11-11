@@ -9,8 +9,30 @@
 # # # . . . # # # . . o # # .
 # # # # # # # # # # # # G # .
 # # # . . . # # # . . o # # .
-7 5 2 8 1 1 13 
-11 7 2 8 9 8 10 0 0 
-11 9 2 8 9 8 10 0 0 
-8 3 5 1 6 1 10 1 11 1 0 0 
-12 1 5 1 6 1 2 2 2 3 0 1 
+5
+{   "switch": "teleport_switch",
+    "position": [7,5],
+    "blocks_process": 2,
+    "point": [[1,8],[13,1]],
+    "type": "toggle" }
+{   "switch": "hard_switch",
+    "position": [12,1],
+    "blocks_process": 4,
+    "point": [[2,2],[3,2],[5,1],[6,1]],
+    "type": "toggle" }
+{   "switch": "sort_switch",
+    "position": [6,6],
+    "blocks_process": 2,
+    "point": [[4,0],[4,1]],
+    "type": "close" }
+{   "switch": "sort_switch",
+    "position": [6,6],
+    "blocks_process": 2,
+    "point": [[4,0],[4,1]],
+    "type": "close" }
+{   "switch": "sort_switch",
+    "position": [6,6],
+    "blocks_process": 2,
+    "point": [[4,0],[4,1]],
+    "type": "close" }
+# ++ error

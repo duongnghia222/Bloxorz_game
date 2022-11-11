@@ -22,7 +22,7 @@ def main():
         global_variables.row, global_variables.col, global_variables.start_x, \
             global_variables.start_y, game_map, global_variables.objects = read_file(path)
         block = Block(global_variables.start_x, global_variables.start_y, "STAND", None, game_map)
-        solution = BFS(block)
+        # solution = BFS(block)
         solution = genetic_algorithm(block)
         if solution:
             #  draw solution
