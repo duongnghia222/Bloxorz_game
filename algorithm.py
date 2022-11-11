@@ -31,3 +31,9 @@ def BFS(block):
             add_move(queue, current.split_move_left_other())
     return solution
 
+<<<<<<< HEAD
+=======
+#
+# def genetic_algorithm(block):
+#
+>>>>>>> ga

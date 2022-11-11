@@ -9,4 +9,9 @@
 . . . . . # # # # . . #
 . . . . . # # # # # # #
 . . . . . . . . # # # .
-6 6 2 0 4 1 4 0 0 
+1
+{   "switch": "sort_switch",
+    "position": [6,6],
+    "blocks_process": 2,
+    "point": [[4,0],[4,1]],
+    "type": "close" }
