@@ -35,4 +35,3 @@
     "blocks_process": 2,
     "point": [[4,0],[4,1]],
     "type": "close" }
-# ++ error
