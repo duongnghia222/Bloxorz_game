@@ -94,8 +94,8 @@ def process_state(block):
         if status == "LIE_HORIZONTAL":
             if game_map[y][x] == 'o':
                 sort_switch(block, x, y)
-            elif game_map[y][x-1] == 'o':
-                sort_switch(block, x - 1, y)
+            # elif game_map[y][x-1] == 'o':
+            #     sort_switch(block, x - 1, y)
             elif game_map[y][x+1] == 'o':
                 sort_switch(block, x + 1, y)
         if status == "LIE_VERTICAL":
@@ -103,8 +103,8 @@ def process_state(block):
                 sort_switch(block, x, y)
             elif game_map[y-1][x] == 'o':
                 sort_switch(block, x, y - 1)
-            elif game_map[y+1][x] == 'o':
-                sort_switch(block, x, y + 1)
+            # elif game_map[y+1][x] == 'o':
+            #     sort_switch(block, x, y + 1)
         if status == "SPLIT" and game_map[y][x] == 'o':
             sort_switch(block, x, y)
         if status == "SPLIT" and game_map[y_split][x_split] == 'o':
@@ -250,7 +250,7 @@ def get_tile_color(tile_contents):
     if tile_contents == "@":
         tile_color = BUTTON_SPLIT_COLOR
     if tile_contents == "G":
-        tile_color = GOAL
+        tile_color = BLACK
     if tile_contents == "+":
         tile_color = BLOCK_COLOR
     return tile_color

@@ -21,8 +21,8 @@ def init(row, col):
 
 def draw_grid(row, col, screen):
     for i in range(col):
-        new_height = round(i * BLOCK_HEIGHT)
-        new_width = round(i * BLOCK_WIDTH)
+        new_height = round(i * screen_scale)
+        new_width = round(i * screen_scale)
         pygame.draw.line(screen, BLACK, (0, new_height), (col*screen_scale, new_height), 2)
         pygame.draw.line(screen, BLACK, (new_width, 0), (new_width, row*screen_scale), 2)
 
@@ -30,8 +30,11 @@ def draw_grid(row, col, screen):
 def draw_map(screen, s):
     for j, tile in enumerate(s):
         for i, tile_contents in enumerate(tile):
-            rectangle = pygame.Rect(i*BLOCK_WIDTH, j*BLOCK_WIDTH, BLOCK_WIDTH, BLOCK_HEIGHT)
+            rectangle = pygame.Rect(i*screen_scale, j*screen_scale, screen_scale, screen_scale)
             pygame.draw.rect(screen, get_tile_color(tile_contents), rectangle)
+            if tile_contents == 'o':
+                pygame.draw.circle(screen, PINK_FOR_CIRCLE, (i*screen_scale + int(screen_scale/2),\
+                                        j*screen_scale + int(screen_scale/2)), 20)
 
 
 def game_loop(row, col, solution, screen):
