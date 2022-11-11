@@ -1,170 +1,144 @@
-import random
-import statistics
-import sys
-import time
-from bisect import bisect_left
-from enum import Enum
-from math import exp
+import random as rnd
+
+class DNA:
+    def __init__(self, gene_length):
+        self.gene_length = gene_length
+        self.genes = []
+        self.fitness = 0.0
+
+        for i in range(gene_length):
+            self.genes.append(self.newChar())
+
+    def newChar(self):
+        c = round(rnd.randint(63, 122))
+        if c == 63:
+            c = 32
+        if c == 64:
+            c = 46
+        return chr(int(c))
+
+    def getPhrase(self):
+        return "".join(self.genes)
+
+    def calcFitness(self, target):
+        score = 0
+        for i in range(len(target)):
+            if self.genes[i] == target[i]:
+                score+=1
+
+        self.fitness = score / float(len(target))
 
 
-def _generate_parent(length, geneSet, get_fitness):
-    genes = []
-    while len(genes) < length:
-        sampleSize = min(length - len(genes), len(geneSet))
-        genes.extend(random.sample(geneSet, sampleSize))
-    fitness = get_fitness(genes)
-    return Chromosome(genes, fitness, Strategies.Create)
+    def crossover(self, other_dna):
+        child = DNA(self.gene_length)
+        mid_point = rnd.randint(0, self.gene_length)
+
+        for i in range(0, self.gene_length):
+            if i < mid_point:
+                child.genes[i] = other_dna.genes[i]
+            else:
+                child.genes[i] = self.genes[i]
+
+        return child
 
 
-def _mutate(parent, geneSet, get_fitness):
-    childGenes = parent.Genes[:]
-    index = random.randrange(0, len(parent.Genes))
-    newGene, alternate = random.sample(geneSet, 2)
-    childGenes[index] = alternate if newGene == childGenes[index] else newGene
-    fitness = get_fitness(childGenes)
-    return Chromosome(childGenes, fitness, Strategies.Mutate)
+    def mutate(self, rate):
+        for i in range(self.gene_length):
+            num = rnd.random()
+            if num < rate:
+                self.genes[i] = self.newChar()
 
 
-def _mutate_custom(parent, custom_mutate, get_fitness):
-    childGenes = parent.Genes[:]
-    custom_mutate(childGenes)
-    fitness = get_fitness(childGenes)
-    return Chromosome(childGenes, fitness, Strategies.Mutate)
 
 
-def _crossover(parentGenes, index, parents, get_fitness, crossover, mutate,
-               generate_parent):
-    donorIndex = random.randrange(0, len(parents))
-    if donorIndex == index:
-        donorIndex = (donorIndex + 1) % len(parents)
-    childGenes = crossover(parentGenes, parents[donorIndex].Genes)
-    if childGenes is None:
-        # parent and donor are indistinguishable
-        parents[donorIndex] = generate_parent()
-        return mutate(parents[index])
-    fitness = get_fitness(childGenes)
-    return Chromosome(childGenes, fitness, Strategies.Crossover)
+class Population:
+    def __init__(self, target, mutationRate, popmax):
+        self.target = target
+        self.mutationRate = mutationRate
+        self.popmax = popmax
+        self.generation = 0
+        self.matingPool = []
+        self.population = []
+        self.finished = False
+        self.got = ""
+
+        for i in range(popmax):
+            self.population.append(DNA(len(target)))
+
+    def calcFitness(self):
+        for dna in self.population:
+            dna.calcFitness(self.target)
+
+    def naturalSelection(self):
+        self.matingPool = []
+        maxFitness = 0
+        for dna in self.population:
+            if dna.fitness > maxFitness:
+                maxFitness = dna.fitness
+
+        fitness = 0
+        for dna in self.population:
+            if maxFitness != 0:
+                fitness = dna.fitness / maxFitness
+            n = int(round(fitness * 100))
+            for i in range(n):
+                self.matingPool.append(dna)
+
+    def generate(self):
+        if len(self.matingPool) != 0:
+            for i in range(len(self.population)):
+                a = rnd.randint(0, len(self.matingPool) - 1)
+                b = rnd.randint(0, len(self.matingPool) - 1)
+                dna_A = self.matingPool[a]
+                dna_B = self.matingPool[b]
+
+                new_dna = dna_A.crossover(dna_B)
+
+                new_dna.mutate(self.mutationRate)
+
+                self.population[i] = new_dna
+
+        self.generation += 1
+
+    def evaluate(self):
+        for dna in self.population:
+            if dna.getPhrase() == self.target:
+                self.finished = True
+                self.got = dna.getPhrase()
+
+    def printPop(self):
+        arr = []
+        for dna in self.population:
+            arr.append(dna.getPhrase())
+        print(arr)
+
+    def printBest(self):
+        maxFit = 0
+        dd = None
+        for dna in self.population:
+            if dna.fitness > maxFit:
+                maxFit = dna.fitness
+                dd = dna
+        print(self.generation, maxFit, dd.getPhrase())
 
 
-def get_best(get_fitness, targetLen, optimalFitness, geneSet, display,
-             custom_mutate=None, custom_create=None, maxAge=None,
-             poolSize=1, crossover=None):
-    if custom_mutate is None:
-        def fnMutate(parent):
-            return _mutate(parent, geneSet, get_fitness)
-    else:
-        def fnMutate(parent):
-            return _mutate_custom(parent, custom_mutate, get_fitness)
 
-    if custom_create is None:
-        def fnGenerateParent():
-            return _generate_parent(targetLen, geneSet, get_fitness)
-    else:
-        def fnGenerateParent():
-            genes = custom_create()
-            return Chromosome(genes, get_fitness(genes), Strategies.Create)
+target = "To be or not to be"
+population_num = 1000
+mutation_rate = 0.01
 
-    strategyLookup = {
-        Strategies.Create: lambda p, i, o: fnGenerateParent(),
-        Strategies.Mutate: lambda p, i, o: fnMutate(p),
-        Strategies.Crossover: lambda p, i, o:
-        _crossover(p.Genes, i, o, get_fitness, crossover, fnMutate,
-                   fnGenerateParent)
-    }
+population = Population(target, mutation_rate, population_num)
 
-    usedStrategies = [strategyLookup[Strategies.Mutate]]
-    if crossover is not None:
-        usedStrategies.append(strategyLookup[Strategies.Crossover])
+while(not population.finished):
+    # Will stop the loop if it found the target
+    population.evaluate()
 
-        def fnNewChild(parent, index, parents):
-            return random.choice(usedStrategies)(parent, index, parents)
-    else:
-        def fnNewChild(parent, index, parents):
-            return fnMutate(parent)
+    # Will calculate the fitness for each DNA (Individual)
+    population.calcFitness()
 
-    for improvement in _get_improvement(fnNewChild, fnGenerateParent,
-                                        maxAge, poolSize):
-        display(improvement)
-        f = strategyLookup[improvement.Strategy]
-        usedStrategies.append(f)
-        if not optimalFitness > improvement.Fitness:
-            return improvement
+    # Will print the best fitness for each generation
+    population.printBest()
 
+    population.naturalSelection()
 
-def _get_improvement(new_child, generate_parent, maxAge, poolSize):
-    bestParent = generate_parent()
-    yield bestParent
-    parents = [bestParent]
-    historicalFitnesses = [bestParent.Fitness]
-    for _ in range(poolSize - 1):
-        parent = generate_parent()
-        if parent.Fitness > bestParent.Fitness:
-            yield parent
-            bestParent = parent
-            historicalFitnesses.append(parent.Fitness)
-        parents.append(parent)
-    lastParentIndex = poolSize - 1
-    pindex = 1
-    while True:
-        pindex = pindex - 1 if pindex > 0 else lastParentIndex
-        parent = parents[pindex]
-        child = new_child(parent, pindex, parents)
-        if parent.Fitness > child.Fitness:
-            if maxAge is None:
-                continue
-            parent.Age += 1
-            if maxAge > parent.Age:
-                continue
-            index = bisect_left(historicalFitnesses, child.Fitness, 0,
-                                len(historicalFitnesses))
-            proportionSimilar = index / len(historicalFitnesses)
-            if random.random() < exp(-proportionSimilar):
-                parents[pindex] = child
-                continue
-            bestParent.Age = 0
-            parents[pindex] = bestParent
-            continue
-        if not child.Fitness > parent.Fitness:
-            # same fitness
-            child.Age = parent.Age + 1
-            parents[pindex] = child
-            continue
-        child.Age = 0
-        parents[pindex] = child
-        if child.Fitness > bestParent.Fitness:
-            bestParent = child
-            yield bestParent
-            historicalFitnesses.append(bestParent.Fitness)
-
-
-class Chromosome:
-    def __init__(self, genes, fitness, strategy):
-        self.Genes = genes
-        self.Fitness = fitness
-        self.Strategy = strategy
-        self.Age = 0
-
-
-class Strategies(Enum):
-    Create = 0,
-    Mutate = 1,
-    Crossover = 2
-
-
-class Benchmark:
-    @staticmethod
-    def run(function):
-        timings = []
-        stdout = sys.stdout
-        for i in range(100):
-            sys.stdout = None
-            startTime = time.time()
-            function()
-            seconds = time.time() - startTime
-            sys.stdout = stdout
-            timings.append(seconds)
-            mean = statistics.mean(timings)
-            if i < 10 or i % 10 == 9:
-                print("{} {:3.2f} {:3.2f}".format(
-                    1 + i, mean,
-                    statistics.stdev(timings, mean) if i > 1 else 0))
+    population.generate()

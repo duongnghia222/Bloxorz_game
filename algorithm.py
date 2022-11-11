@@ -1,6 +1,6 @@
 import global_variables
 from functions import check_win, add_move, solution_path
-
+from genetic_algorithm import ga
 
 def BFS(block):
     global_variables.previous = [block]  # save previous states
@@ -31,6 +31,6 @@ def BFS(block):
             add_move(queue, current.split_move_left_other())
     return solution
 
-#
-# def genetic_algorithm(block):
-#
+
+def genetic_algorithm(block):
+    ga(block)
