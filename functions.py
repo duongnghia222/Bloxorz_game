@@ -244,10 +244,12 @@ def get_tile_color(tile_contents):
         tile_color = TILE_COLOR
     if tile_contents == "x":
         tile_color = BUTTON_STRONG_COLOR
-    if tile_contents == "o":
-        tile_color = BUTTON_SOFT_COLOR
+    # if tile_contents == "o":
+    #     tile_color = BUTTON_SOFT_COLOR
     if tile_contents == "@":
         tile_color = BUTTON_SPLIT_COLOR
+    if tile_contents == "=":
+        tile_color = TILE_WEAK_COLOR
     if tile_contents == "G":
         tile_color = BLACK
     if tile_contents == "+":
