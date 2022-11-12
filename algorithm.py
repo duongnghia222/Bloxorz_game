@@ -1,6 +1,7 @@
 import global_variables
-from functions import check_win, add_move, solution_path
+from functions import check_win, add_move, solution_path, ga_solution_reprocess
 from genetic_algorithm import ga
+
 
 def BFS(block):
     global_variables.previous = [block]  # save previous states
@@ -33,4 +34,6 @@ def BFS(block):
 
 
 def genetic_algorithm(block):
-    ga(block)
+    solution = ga(block)
+    ga_solution_path = ga_solution_reprocess(solution, block)
+    return ga_solution_path

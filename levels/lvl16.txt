@@ -24,7 +24,7 @@
     "point": [[1,0],[2,1]],
     "type": "toggle" }
 {   "switch": "teleport_switch",
-    "position": [2,2],
+    "position": [2,1],
     "blocks_process": 2,
     "point": [[0,1],[2,1]],
     "type": "toggle" }
@@ -38,7 +38,7 @@
     "blocks_process": 2,
     "point": [[4,1],[3,1]],
     "type": "open" }
-{   "switch": "sort_switch",
+{   "switch": "hard_switch",
     "position": [6,1],
     "blocks_process": 2,
     "point": [[8,1],[9,1]],

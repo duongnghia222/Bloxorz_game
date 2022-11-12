@@ -27,13 +27,13 @@
 {   "switch": "sort_switch",
     "position": [2,5],
     "blocks_process": 4,
-    "point": [[8,3],[9,3],[1,8],[2,8]],
+    "point": [[12,3],[13,3],[1,8],[2,8]],
     "type": "close" }
 {   "switch": "sort_switch",
     "position": [8,6],
     "blocks_process": 4,
     "point": [[12,3],[13,3],[1,8],[2,8]],
-    "type": "close" }
+    "type": "open" }
 {   "switch": "hard_switch",
     "position": [3,8],
     "blocks_process": 1,

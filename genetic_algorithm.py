@@ -1,37 +1,82 @@
 import random
-from functions import check_win_dna
+from functions import check_win_dna, add_move_fitness, check_win
 from math import sqrt
+import copy
 from block import Block
 #  "up", "right", "down", "left" = [1,2,3,4]
 
-U = "up"
-R = "right"
-D = "down"
-L = "left"
-direction = [U, R, D, L]
 
 class DNA:
+    U = "up"
+    R = "right"
+    D = "down"
+    L = "left"
+    direction = [U, R, D, L]
+
     def __init__(self, no_of_moves):
         self.gene_length = no_of_moves
         self.genes = []
         self.fitness = 0.0
+        self.done = False
 
         for i in range(no_of_moves):
-            self.genes.append(random.choice(direction))
+            self.genes.append(random.choice(self.direction))
 
-    def calculate_fitness(self, block, target):
-        for gene in self.genes:
-            if gene == 1:
-                block.move_up()
-            elif gene == 2:
-                block.move_right()
-            elif gene == 3:
-                block.move_down()
+    def calculate_fitness(self, new_block, target):
+        if(self.genes[0] == self.R and self.genes[1] == self.R ):
+            print("hey")
+        distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
+        rate = 1.5
+        blocked = 0
+        open_space = 0  # Points for going into open spaces
+        no_back_forth = 0  # Giving points for not going back and forth e.g DUDU...
+        for i in range(len(self.genes) - 1):
+            if self.genes[i] == self.U:
+                new_block = new_block.move_up()
+                if add_move_fitness(new_block):
+                    open_space += 1
+                    new_distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
+                    self.fitness += (distance - new_distance) * rate
+                else:
+                    new_block = new_block.move_down()
+                    blocked += 1
+            elif self.genes[i] == self.R:
+                new_block = new_block.move_right()
+                if add_move_fitness(new_block):
+                    open_space += 1
+                    new_distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
+                    self.fitness += (distance - new_distance) * rate
+                else:
+                    new_block = new_block.move_left()
+                    blocked += 1
+            elif self.genes[i] == self.D:
+                new_block = new_block.move_down()
+                if add_move_fitness(new_block):
+                    open_space += 1
+                    new_distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
+                    self.fitness += (distance - new_distance) * rate
+                else:
+                    new_block = new_block.move_up()
+                    blocked += 1
             else:
-                block.move_left()
-            distance = sqrt(((block.x - target[1][0]) ** 2) + \
-                            ((block.y - target[1][0]) ** 2))
-            self.fitness += 1/distance
+                new_block = new_block.move_left()
+                if add_move_fitness(new_block):
+                    open_space += 1
+                    new_distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
+                    self.fitness += (distance - new_distance) * rate
+                else:
+                    new_block = new_block.move_right()
+                    blocked += 1
+            if self.genes[i] != self.genes[i + 1]:
+                if self.genes[i] in [self.U, self.D] and self.genes[i + 1] in [self.L, self.R]:
+                    no_back_forth += 1
+            if check_win(new_block):
+                self.fitness += 10
+                self.done = True
+                return self.fitness
+
+        self.fitness = open_space + no_back_forth - blocked
+        return self.fitness
 
     def crossover(self, other_dna):
         child = DNA(self.gene_length)
@@ -49,12 +94,11 @@ class DNA:
         for i in range(self.gene_length):
             num = random.random()
             if num < rate:
-                self.genes[i] = random.choice(direction)
+                self.genes[i] = random.choice(self.direction)
 
 
 class Population:
-    def __init__(self, block, target, no_of_moves,mutation_rate, max_population):
-        self.block = block
+    def __init__(self, target, no_of_moves, mutation_rate, max_population):
         self.target = target
         self.mutation_rate = mutation_rate
         self.max_population = max_population
@@ -67,15 +111,22 @@ class Population:
         for i in range(max_population):
             self.population.append(DNA(no_of_moves))
 
-    def calculate_fitness(self):
+    def calculate_fitness(self, new_block):
         for dna in self.population:
-            dna.calculate_fitness(self.block, self.target)
+            dna.calculate_fitness(new_block, self.target)
+            if dna.done:
+                break
 
-    def evaluate(self):
+    def evaluate(self, new_block):
         for dna in self.population:
-            if check_win_dna(dna, self.block):
+            # if check_win_dna(dna, new_block):
+            #     self.finished = True
+            #     self.got = dna
+            #     break
+            if dna.done:
                 self.finished = True
                 self.got = dna
+                break
 
     def print_best_dna(self):
         max_fitness = 0
@@ -105,10 +156,10 @@ class Population:
             for i in range(len(self.population)):
                 a = random.randint(0, len(self.matingPool) - 1)
                 b = random.randint(0, len(self.matingPool) - 1)
-                dna_A = self.matingPool[a]
-                dna_B = self.matingPool[b]
+                dna_a = self.matingPool[a]
+                dna_b = self.matingPool[b]
 
-                new_dna = dna_A.crossover(dna_B)
+                new_dna = dna_a.crossover(dna_b)
 
                 new_dna.mutate(self.mutation_rate)
 
@@ -128,15 +179,15 @@ def ga(block):
     start_point = [start_x, start_y]
     target = [start_point, g]
     population_num = 100
-    mutation_rate = 0.1
-    no_of_moves = 15
-    population = Population(block, target, no_of_moves, mutation_rate, population_num)
-    while not population.finished:
-        population.evaluate()
-        population.calculate_fitness()
+    mutation_rate = 0.05
+    no_of_moves = 12
+    max_tries = 10000
+    population = Population(target, no_of_moves, mutation_rate, population_num)
+    while (not population.finished) and population.generation < max_tries:
+        new_block = copy.copy(block)
+        population.calculate_fitness(new_block)
+        population.evaluate(new_block)
         population.print_best_dna()
         population.selection()
         population.generate()
-
-
-
+    return population.got
