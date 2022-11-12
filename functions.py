@@ -305,25 +305,23 @@ def add_move_fitness(block):
     return False
 
 
-def check_win_dna(dna, block):
-    global_variables.previous = []
-    if dna.genes[0] == dna.R and dna.genes[1] == dna.R:
-        print("hey")
-    valid_dnas = [block]
-    cnt = 0
-    for gene in dna.genes:
-        if gene == dna.U:
-            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_up())
-        elif gene == dna.R:
-            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_right())
-        elif gene == dna.D:
-            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_down())
-        else:
-            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_left())
-    for valid_dna in valid_dnas:
-        if check_win(valid_dna):
-            return True
-    return False
+# def check_win_dna(dna, block):
+#     global_variables.previous = []
+#     valid_dnas = [block]
+#     cnt = 0
+#     for gene in dna.genes:
+#         if gene == dna.U:
+#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_up())
+#         elif gene == dna.R:
+#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_right())
+#         elif gene == dna.D:
+#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_down())
+#         else:
+#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_left())
+#     for valid_dna in valid_dnas:
+#         if check_win(valid_dna):
+#             return True
+#     return False
 
 
 def ga_solution_reprocess(solution, block):

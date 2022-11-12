@@ -1,5 +1,5 @@
 import random
-from functions import check_win_dna, add_move_fitness, check_win
+from functions import add_move_fitness, check_win
 from math import sqrt
 import copy
 from block import Block
@@ -23,8 +23,6 @@ class DNA:
             self.genes.append(random.choice(self.direction))
 
     def calculate_fitness(self, new_block, target):
-        if(self.genes[0] == self.R and self.genes[1] == self.R ):
-            print("hey")
         distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
         rate = 1.5
         blocked = 0
@@ -117,7 +115,7 @@ class Population:
             if dna.done:
                 break
 
-    def evaluate(self, new_block):
+    def evaluate(self):
         for dna in self.population:
             # if check_win_dna(dna, new_block):
             #     self.finished = True
@@ -180,13 +178,13 @@ def ga(block):
     target = [start_point, g]
     population_num = 100
     mutation_rate = 0.05
-    no_of_moves = 12
+    no_of_moves = 20
     max_tries = 10000
     population = Population(target, no_of_moves, mutation_rate, population_num)
     while (not population.finished) and population.generation < max_tries:
         new_block = copy.copy(block)
         population.calculate_fitness(new_block)
-        population.evaluate(new_block)
+        population.evaluate()
         population.print_best_dna()
         population.selection()
         population.generate()

@@ -3,4 +3,3 @@ def init():
     row, col, block_id, is_test, pygame_display, is_bfs = [0, 0, 0, 1, 0, 0]
     objects = []
     previous = []
-

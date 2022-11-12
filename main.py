@@ -3,7 +3,8 @@ from algorithm import BFS, genetic_algorithm
 from read_level_input import read_file
 import global_variables
 from test import test
-from draw import draw_pygame,draw_raw_solution
+from draw import draw_pygame, draw_raw_solution
+
 
 def main():
     global_variables.init()
@@ -17,7 +18,7 @@ def main():
         # global_variables.pygame_display = int(input("Show solution in game demo ?/nYes: 1/nNo: 2"))
         print("Showing step by step...")
         # level = int(input("choose level (from 1-33)\nYour choice: "))
-        level = 1
+        level = 101
         path = './levels/lvl' + str(level) + '.txt'
         global_variables.row, global_variables.col, global_variables.start_x, \
             global_variables.start_y, game_map, global_variables.objects = read_file(path)
@@ -35,8 +36,6 @@ def main():
                 draw_raw_solution(solution)
         else:
             print("can not find solution :((((((")
-
-
 
 
 if __name__ == "__main__":

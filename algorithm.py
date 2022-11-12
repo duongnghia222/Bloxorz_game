@@ -37,4 +37,3 @@ def genetic_algorithm(block):
     solution = ga(block)
     ga_solution_path = ga_solution_reprocess(solution, block)
     return ga_solution_path
-
