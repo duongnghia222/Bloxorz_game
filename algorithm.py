@@ -1,5 +1,6 @@
 import global_variables
-from functions import check_win, add_move, solution_path
+from functions import check_win, add_move, solution_path, ga_solution_reprocess
+from genetic_algorithm import ga
 
 
 def BFS(block):
@@ -31,9 +32,9 @@ def BFS(block):
             add_move(queue, current.split_move_left_other())
     return solution
 
-<<<<<<< HEAD
-=======
-#
-# def genetic_algorithm(block):
-#
->>>>>>> ga
+
+def genetic_algorithm(block):
+    solution = ga(block)
+    ga_solution_path = ga_solution_reprocess(solution, block)
+    return ga_solution_path
+

@@ -40,7 +40,6 @@ def sort_switch(block, x, y):
 
 
 def hard_switch(block, x, y):
-    game_map = block.game_map
     for obj in global_variables.objects:
         if (x, y) == (obj["position"][0], obj["position"][1]):  # find object by position
             if obj["switch"] != "hard_switch":  # for debugging
@@ -292,3 +291,68 @@ def convert_solution_map(solution):
             s.game_map[s.y][s.x] = '+'
             s.game_map[s.y_split][s.x_split] = '+'
 
+
+def add_move_ga(valid_dnas, cnt, block):
+    if process_state(block):
+        valid_dnas.append(block)
+        cnt += 1
+    return cnt
+
+
+def add_move_fitness(block):
+    if process_state(block):
+        return True
+    return False
+
+
+def check_win_dna(dna, block):
+    global_variables.previous = []
+    if dna.genes[0] == dna.R and dna.genes[1] == dna.R:
+        print("hey")
+    valid_dnas = [block]
+    cnt = 0
+    for gene in dna.genes:
+        if gene == dna.U:
+            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_up())
+        elif gene == dna.R:
+            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_right())
+        elif gene == dna.D:
+            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_down())
+        else:
+            cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_left())
+    for valid_dna in valid_dnas:
+        if check_win(valid_dna):
+            return True
+    return False
+
+
+def ga_solution_reprocess(solution, block):
+    res = [block]
+    for direction in solution.genes:
+        if direction == "up":
+            block = block.move_up()
+            if add_move_fitness(block):
+                res.append(block)
+            else:
+                block = block.move_down()
+        elif direction == "right":
+            block = block.move_right()
+            if add_move_fitness(block):
+                res.append(block)
+            else:
+                block = block.move_left()
+        elif direction == "down":
+            block = block.move_down()
+            if add_move_fitness(block):
+                res.append(block)
+            else:
+                block = block.move_up()
+        else:
+            block = block.move_left()
+            if add_move_fitness(block):
+                res.append(block)
+            else:
+                block = block.move_right()
+        if check_win(block):
+            break
+    return res
