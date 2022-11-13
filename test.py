@@ -17,7 +17,7 @@ def test():
         solution = BFS(block)
         if solution:
             print("Success !!!")
-            print("Level ", str(level), ":     Found solution in    ", round(time.time() - start_time, 5), ("s"))
+            print("Level ", str(level), ":     Found solution in    ", round(time.time() - start_time, 9), ("s"))
         else:
             print("Failed to find solution :( ")
         print("===========================================")

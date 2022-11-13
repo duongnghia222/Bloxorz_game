@@ -1,5 +1,4 @@
 import global_variables
-from constants import *
 
 
 def add_move(queue, block):
@@ -17,6 +16,8 @@ def sort_switch(block, x, y):
     game_map = block.game_map
     for obj in global_variables.objects:
         if (x, y) == (obj["position"][0], obj["position"][1]):  # find object by position
+            if (x,y) == (7,4):
+                print("hey")
             if obj["switch"] != "sort_switch":  # for debugging
                 print("sort_switch wrong type !!!")
                 break
@@ -234,27 +235,6 @@ def solution_path(block):
         temp = temp.prev
     solution.reverse()
     return solution
-
-
-def get_tile_color(tile_contents):
-    tile_color = EMPTY
-    if tile_contents == ".":
-        tile_color = EMPTY_SPACE
-    if tile_contents == "#":
-        tile_color = TILE_COLOR
-    if tile_contents == "x":
-        tile_color = BUTTON_STRONG_COLOR
-    # if tile_contents == "o":
-    #     tile_color = BUTTON_SOFT_COLOR
-    if tile_contents == "@":
-        tile_color = BUTTON_SPLIT_COLOR
-    if tile_contents == "=":
-        tile_color = TILE_WEAK_COLOR
-    if tile_contents == "G":
-        tile_color = BLACK
-    if tile_contents == "+":
-        tile_color = BLOCK_COLOR
-    return tile_color
 
 
 def convert_solution_map(solution):

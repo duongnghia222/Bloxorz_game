@@ -8,6 +8,19 @@
 . # . . . . # # # . . . . .
 . x . . . . # G # . . . . .
 . . . . . . # # # . . . . .
-7 1 2 2 3 3 3 0 0 
-13 0 2 3 12 5 10 
-1 7 2 3 4 9 7 0 0 
+3
+{   "switch": "teleport_switch",
+    "position": [13,0],
+    "blocks_process": 2,
+    "point": [[10,5],[12,3]],
+    "type": "toggle" }
+{   "switch": "sort_switch",
+    "position": [7,1],
+    "blocks_process": 2,
+    "point": [[2,3],[3,3]],
+    "type": "close" }
+{   "switch": "hard_switch",
+    "position": [1,7],
+    "blocks_process": 2,
+    "point": [[3,4],[9,7]],
+    "type": "open" }

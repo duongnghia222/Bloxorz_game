@@ -1,10 +1,33 @@
 from functions import view_2d_solution
 import pygame
 import sys
-from constants import *
-from functions import get_tile_color, convert_solution_map
+from functions import convert_solution_map
 
 screen_scale = 50
+BLOCK_COLOR = (76,153,0)
+TILE_COLOR = (255,209,115)
+TILE_FRAGILE = (255,153,51)
+BUTTON_SPLIT_COLOR = (178,255,102)
+EMPTY_SPACE = (40,40,40)
+EMPTY = (255,199,185)
+UGLY_PINK = (255, 0, 255)
+BLACK = (0,0,0)
+PINK_FOR_CIRCLE = (191, 52, 194)
+GRAY = (33,33,33)
+
+def get_tile_color(tile_contents):
+    tile_color = EMPTY
+    if tile_contents == ".":
+        tile_color = EMPTY_SPACE
+    if tile_contents == "#":
+        tile_color = TILE_COLOR
+    if tile_contents == "=":
+        tile_color = TILE_FRAGILE
+    if tile_contents == "G":
+        tile_color = BLACK
+    if tile_contents == "+":
+        tile_color = BLOCK_COLOR
+    return tile_color
 
 
 def init(row, col):
@@ -33,8 +56,18 @@ def draw_map(screen, s):
             rectangle = pygame.Rect(i * screen_scale, j * screen_scale, screen_scale, screen_scale)
             pygame.draw.rect(screen, get_tile_color(tile_contents), rectangle)
             if tile_contents == 'o':
-                pygame.draw.circle(screen, PINK_FOR_CIRCLE, (i * screen_scale + int(screen_scale / 2),
-                                                             j * screen_scale + int(screen_scale / 2)), 20)
+                pygame.draw.circle(screen, GRAY, (i * screen_scale + int(screen_scale / 2),
+                                                             j * screen_scale + int(screen_scale / 2)), 20, 8)
+            if tile_contents == 'x':
+                pygame.draw.line(screen, GRAY, (i * screen_scale + 5, j * screen_scale + 5),(
+                                   (i+1) * screen_scale - 5, (j+1) * screen_scale - 5), 9)
+                pygame.draw.line(screen, GRAY, (
+                    (i + 1) * screen_scale - 5, j * screen_scale + 5), (
+                    (i) * screen_scale + 5, (j + 1) * screen_scale - 5), 9)
+            if tile_contents == '@':
+                pygame.draw.circle(screen, GRAY, (i * screen_scale + screen_scale//2,
+                                                       j * screen_scale + screen_scale//2), 22, 7,
+                                                            True, False, True, False)
 
 
 def game_loop(row, col, solution, screen):

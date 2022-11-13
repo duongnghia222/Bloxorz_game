@@ -18,7 +18,7 @@ def main():
         # global_variables.pygame_display = int(input("Show solution in game demo ?/nYes: 1/nNo: 2"))
         print("Showing step by step...")
         # level = int(input("choose level (from 1-33)\nYour choice: "))
-        level = 4
+        level = 23
         path = './levels/lvl' + str(level) + '.txt'
         global_variables.row, global_variables.col, global_variables.start_x, \
             global_variables.start_y, game_map, global_variables.objects = read_file(path)
