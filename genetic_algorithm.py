@@ -24,7 +24,7 @@ class DNA:
 
     def calculate_fitness(self, new_block, target):
         distance = sqrt((target[1][0] - new_block.x) ** 2 + (target[1][1] - new_block.y) ** 2)
-        rate = 1.5
+        rate = 0.5
         blocked = 0
         open_space = 0  # Points for going into open spaces
         no_back_forth = 0  # Giving points for not going back and forth e.g DUDU...
@@ -133,7 +133,7 @@ class Population:
             if dna.fitness > max_fitness:
                 max_fitness = dna.fitness
                 best_dna = dna
-        print(self.generation, max_fitness, best_dna.genes)
+        print(self.generation, "finess = ", max_fitness) #, best_dna.genes)
 
     def selection(self):
         self.matingPool = []
@@ -176,7 +176,7 @@ def ga(block):
             break
     start_point = [start_x, start_y]
     target = [start_point, g]
-    population_num = 100
+    population_num = 50
     mutation_rate = 0.05
     no_of_moves = 20
     max_tries = 10000

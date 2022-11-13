@@ -25,12 +25,12 @@ x . . # # # # # # # # # . . x
     "blocks_process": 2,
     "point": [[5,5],[5,6]],
     "type": "open" }
-{   "switch": "sort_switch",
+{   "switch": "hard_switch",
     "position": [0,3],
     "blocks_process": 2,
     "point": [[3,8],[4,8]],
     "type": "open" }
-{   "switch": "sort_switch",
+{   "switch": "hard_switch",
     "position": [0,3],
     "blocks_process": 2,
     "point": [[10,9],[11,9]],

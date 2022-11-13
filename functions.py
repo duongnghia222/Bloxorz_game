@@ -16,8 +16,6 @@ def sort_switch(block, x, y):
     game_map = block.game_map
     for obj in global_variables.objects:
         if (x, y) == (obj["position"][0], obj["position"][1]):  # find object by position
-            if (x,y) == (7,4):
-                print("hey")
             if obj["switch"] != "sort_switch":  # for debugging
                 print("sort_switch wrong type !!!")
                 break
@@ -274,9 +272,9 @@ def convert_solution_map(solution):
             s.game_map[s.y_split][s.x_split] = '+'
 
 
-def add_move_ga(valid_dnas, cnt, block):
+def add_move_ga(valid_dna_s, cnt, block):
     if process_state(block):
-        valid_dnas.append(block)
+        valid_dna_s.append(block)
         cnt += 1
     return cnt
 
@@ -289,18 +287,18 @@ def add_move_fitness(block):
 
 # def check_win_dna(dna, block):
 #     global_variables.previous = []
-#     valid_dnas = [block]
+#     valid_dna_s = [block]
 #     cnt = 0
 #     for gene in dna.genes:
 #         if gene == dna.U:
-#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_up())
+#             cnt = add_move_ga(valid_dna_s, cnt, valid_dna_s[cnt].move_up())
 #         elif gene == dna.R:
-#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_right())
+#             cnt = add_move_ga(valid_dna_s, cnt, valid_dna_s[cnt].move_right())
 #         elif gene == dna.D:
-#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_down())
+#             cnt = add_move_ga(valid_dna_s, cnt, valid_dna_s[cnt].move_down())
 #         else:
-#             cnt = add_move_ga(valid_dnas, cnt, valid_dnas[cnt].move_left())
-#     for valid_dna in valid_dnas:
+#             cnt = add_move_ga(valid_dna_s, cnt, valid_dna_s[cnt].move_left())
+#     for valid_dna in valid_dna_s:
 #         if check_win(valid_dna):
 #             return True
 #     return False
